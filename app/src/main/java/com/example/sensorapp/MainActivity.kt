@@ -1,5 +1,6 @@
 package com.example.sensorapp
 
+
 import SensorViewModel
 import android.Manifest
 import android.content.Intent
@@ -9,12 +10,23 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
@@ -22,6 +34,17 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import java.lang.Math.abs
+
+import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.Surface
+
+import androidx.compose.ui.text.TextStyle
+
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 class MainActivity : ComponentActivity() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -38,6 +61,7 @@ class MainActivity : ComponentActivity() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         sensorViewModel = ViewModelProvider(this).get(SensorViewModel::class.java) // Corrected ViewModel instantiation
 
+
         checkAndRequestLocationPermissions {
             fetchLocation()
         }
@@ -49,7 +73,22 @@ class MainActivity : ComponentActivity() {
                 startActivity(intent)
             }
         }
+
+
+
+
+    setContent {
+        MaterialTheme {
+            // Setting a Surface with a background color
+            Surface(color = MaterialTheme.colorScheme.background) {
+                SensorScreen(sensorViewModel) {
+                    val intent = Intent(this@MainActivity, GestureActivity::class.java)
+                    startActivity(intent)
+                }
+            }
+        }
     }
+}
 
     private fun checkAndRequestLocationPermissions(onPermissionGranted: () -> Unit) {
         if (locationPermissions.all {
@@ -97,32 +136,65 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun SensorScreen(viewModel: SensorViewModel, navigateToGestureActivity: () -> Unit) {
     Column {
-        val temperature = viewModel.temperatureLiveData.observeAsState()
-        val pressure = viewModel.pressureLiveData.observeAsState()
-        val city = viewModel.cityLiveData.observeAsState("Fetching city...")
-        val state = viewModel.stateLiveData.observeAsState("Fetching state...")
-        Text(text = "")
-        Text(text = "Location")
-        Text(text = "City: ${city.value}")
-        Text(text = "State: ${state.value}")
-        Text(text = "")
-        Text(text = "Temperature: ${temperature.value ?: "N/A"}")
-        Text(text = "")
-        Text(text = "Air Pressure: ${pressure.value ?: "N/A"}")
+        // Title centered
+        Text(
+            text = "Sensors Playground",
+            style = TextStyle(
+                fontWeight = FontWeight.Bold,
+                fontSize = 24.sp,
+                textAlign = TextAlign.Center
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.CenterHorizontally)
+        )
 
+        Spacer(Modifier.height(16.dp))
 
+        // Left-aligned content with margin
+        Column(modifier = Modifier.padding(start = 16.dp)) {
+            val temperature = viewModel.temperatureLiveData.observeAsState()
+            val pressure = viewModel.pressureLiveData.observeAsState()
+            val city = viewModel.cityLiveData.observeAsState("Fetching city...")
+            val state = viewModel.stateLiveData.observeAsState("Fetching state...")
+
+            Text(text = "Location", fontWeight = FontWeight.Bold)
+            Text(text = "City: ${city.value}", fontSize = 16.sp)
+            Text(text = "State: ${state.value}", fontSize = 16.sp)
+
+            Spacer(Modifier.height(8.dp))
+
+            Text(text = "Temperature: ${temperature.value ?: "N/A"}", fontSize = 16.sp)
+            Spacer(Modifier.height(8.dp))
+            Text(text = "Air Pressure: ${pressure.value ?: "N/A"}", fontSize = 16.sp)
+        }
+
+        Spacer(Modifier.height(16.dp))
+
+        // Centered button
         Button(
             onClick = { navigateToGestureActivity() },
-            modifier = Modifier.pointerInput(Unit) {
-                detectHorizontalDragGestures { _, dragAmount ->
-                    val dx = dragAmount
-                    if (abs(dx) > 0) {
-                        navigateToGestureActivity()
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp)
+                .padding(horizontal = 32.dp)
+                .align(Alignment.CenterHorizontally)
+                .pointerInput(Unit) {
+                    detectHorizontalDragGestures { _, dragAmount ->
+                        val dx = dragAmount
+                        if (abs(dx) > 0) {
+                            navigateToGestureActivity()
+                        }
                     }
-                }
-            }
+                },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.LightGray,  // Light gray background
+                contentColor = Color(0xFF7B1FA2)  // Purple text
+            ),
+            shape = RoundedCornerShape(0.dp)  // Square shape
         ) {
-            Text("Gesture Playground")
+            Text("Gesture Playground", fontWeight = FontWeight.Bold)
         }
     }
 }
+
