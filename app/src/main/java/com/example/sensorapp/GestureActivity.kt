@@ -2,7 +2,10 @@ package com.example.sensorapp
 
 import android.os.Bundle
 
-
+import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.ui.input.pointer.pointerInput
+import android.view.MotionEvent
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Canvas
@@ -16,7 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.input.pointer.pointerInteropFilter
-import android.view.MotionEvent
+
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -55,51 +58,40 @@ fun GestureActivityContent() {
 }
 
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun BallMovementArea(modifier: Modifier, ballPosition: MutableState<Offset>, gestureLog: MutableList<String>) {
     var startDragPosition by remember { mutableStateOf(Offset.Zero) }
-    var isDragged by remember { mutableStateOf(false) }
 
     Canvas(modifier = modifier
-        .pointerInteropFilter { motionEvent ->
-            when (motionEvent.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    startDragPosition = Offset(motionEvent.x, motionEvent.y)
-                    isDragged = false
-                    true // Consume the event
-                }
-                MotionEvent.ACTION_MOVE -> {
-                    ballPosition.value = Offset(motionEvent.x, motionEvent.y)
-                    isDragged = true
-                    true
-                }
-                MotionEvent.ACTION_UP -> {
-                    if (isDragged) {
-                        // Log swipe direction on finger lift
-                        val xDiff = motionEvent.x - startDragPosition.x
-                        val yDiff = motionEvent.y - startDragPosition.y
-                        when {
-                            abs(xDiff) > abs(yDiff) && xDiff > 0 -> gestureLog.add("Swiped Right")
-                            abs(xDiff) > abs(yDiff) && xDiff < 0 -> gestureLog.add("Swiped Left")
-                            abs(yDiff) > abs(xDiff) && yDiff > 0 -> gestureLog.add("Swiped Down")
-                            abs(yDiff) > abs(xDiff) && yDiff < 0 -> gestureLog.add("Swiped Up")
-                        }
+        .pointerInput(Unit) {
+            detectDragGestures(
+                onDragStart = { startDragPosition = it },
+                onDragEnd = {
+                    val endDragPosition = ballPosition.value
+                    val xDiff = endDragPosition.x - startDragPosition.x
+                    val yDiff = endDragPosition.y - startDragPosition.y
+                    when {
+                        abs(xDiff) > abs(yDiff) && xDiff < 0 -> gestureLog.add("You Swiped Left")
+                        abs(yDiff) > abs(xDiff) && yDiff > 0 -> gestureLog.add("You Swiped Down")
+                        abs(yDiff) > abs(xDiff) && yDiff < 0 -> gestureLog.add("You Swiped Up")
                     }
-                    true
+                },
+                onDrag = { _, dragAmount ->
+                    val newX = ballPosition.value.x + dragAmount.x
+                    val newY = ballPosition.value.y + dragAmount.y
+                    ballPosition.value = Offset(newX, newY)
                 }
-                else -> false
-            }
+            )
         }
         .pointerInput(Unit) {
             detectTapGestures(
-                onDoubleTap = {
-                    gestureLog.add("Double Tapped")
+                onDoubleTap = { offset ->
+                    ballPosition.value = offset
+                    gestureLog.add("You Double Tapped")
                 },
-                onTap = {
-                    if (!isDragged) {
-                        gestureLog.add("Tapped")
-                    }
+                onTap = { offset ->
+                    ballPosition.value = offset
+                    gestureLog.add("You Tapped")
                 }
             )
         }
