@@ -173,7 +173,7 @@ fun SensorScreen(viewModel: SensorViewModel, navigateToGestureActivity: () -> Un
 
         // Centered button
         Button(
-            onClick = { navigateToGestureActivity() },
+            onClick = {  },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp)
