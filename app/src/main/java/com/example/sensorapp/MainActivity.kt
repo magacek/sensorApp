@@ -59,7 +59,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        sensorViewModel = ViewModelProvider(this).get(SensorViewModel::class.java) // Corrected ViewModel instantiation
+        sensorViewModel =
+            ViewModelProvider(this).get(SensorViewModel::class.java) // Corrected ViewModel instantiation
 
 
         checkAndRequestLocationPermissions {
@@ -67,28 +68,41 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            SensorScreen(sensorViewModel) {
-                // Note the change here from 'this' to 'this@MainActivity'
-                val intent = Intent(this@MainActivity, GestureActivity::class.java)
-                startActivity(intent)
-            }
+            SensorScreen(
+                sensorViewModel,
+                navigateToGestureActivity = {
+                    val intent = Intent(this@MainActivity, GestureActivity::class.java)
+                    startActivity(intent)
+                },
+                navigateToSensorBallActivity = {
+                    val ballIntent = Intent(this@MainActivity, SensorBallActivity::class.java)
+                    startActivity(ballIntent)
+                }
+            )
         }
 
 
 
-
-    setContent {
-        MaterialTheme {
-            // Setting a Surface with a background color
-            Surface(color = MaterialTheme.colorScheme.background) {
-                SensorScreen(sensorViewModel) {
-                    val intent = Intent(this@MainActivity, GestureActivity::class.java)
-                    startActivity(intent)
+        setContent {
+            MaterialTheme {
+                Surface(color = MaterialTheme.colorScheme.background) {
+                    SensorScreen(
+                        sensorViewModel,
+                        navigateToGestureActivity = {
+                            val intent = Intent(this@MainActivity, GestureActivity::class.java)
+                            startActivity(intent)
+                        },
+                        navigateToSensorBallActivity = {
+                            val ballIntent =
+                                Intent(this@MainActivity, SensorBallActivity::class.java)
+                            startActivity(ballIntent)
+                        }
+                    )
                 }
             }
         }
     }
-}
+
 
     private fun checkAndRequestLocationPermissions(onPermissionGranted: () -> Unit) {
         if (locationPermissions.all {
@@ -134,7 +148,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun SensorScreen(viewModel: SensorViewModel, navigateToGestureActivity: () -> Unit) {
+fun SensorScreen(viewModel: SensorViewModel, navigateToGestureActivity: () -> Unit, navigateToSensorBallActivity: () -> Unit) {
     Column {
         // Title centered
         Text(
@@ -195,6 +209,31 @@ fun SensorScreen(viewModel: SensorViewModel, navigateToGestureActivity: () -> Un
         ) {
             Text("Gesture Playground", fontWeight = FontWeight.Bold)
         }
+
+        Spacer(Modifier.height(16.dp))
+        Button(
+            onClick = {  },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp)
+                .padding(horizontal = 32.dp)
+                .align(Alignment.CenterHorizontally)
+                .pointerInput(Unit) {
+                    detectHorizontalDragGestures { _, dragAmount ->
+                        val dx = dragAmount
+                        if (abs(dx) > 0) {
+                            navigateToSensorBallActivity()
+                        }
+                    }
+                },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.LightGray,  // Light gray background
+                contentColor = Color(0xFF7B1FA2)  // Purple text
+            ),
+            shape = RoundedCornerShape(0.dp)  // Square shape
+        ) {
+            Text("Sensor Playground", fontWeight = FontWeight.Bold)
+        }
+
     }
 }
-
