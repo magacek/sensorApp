@@ -52,6 +52,16 @@ android {
 dependencies {
     implementation("com.google.android.gms:play-services-location:18.0.0")
 
+    // AndroidX Core Library
+    implementation("androidx.core:core-ktx:1.8.0")
+
+// AndroidX Fragment Library
+    implementation ("androidx.fragment:fragment-ktx:1.5.2")
+
+// AndroidX AppCompat Library
+    implementation ("androidx.appcompat:appcompat:1.5.0")
+
+
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
     implementation("androidx.compose.runtime:runtime-livedata:1.5.4")
     implementation("androidx.core:core-ktx:1.9.0")
