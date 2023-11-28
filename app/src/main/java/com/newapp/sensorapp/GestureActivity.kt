@@ -1,4 +1,4 @@
-package com.example.sensorapp
+package com.newapp.sensorapp
 
 import android.content.res.Configuration
 import android.os.Bundle
@@ -6,7 +6,6 @@ import android.os.Bundle
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.ui.input.pointer.pointerInput
-import android.view.MotionEvent
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Canvas
@@ -17,18 +16,41 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.input.pointer.pointerInteropFilter
 
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import java.lang.Math.abs
 
+/**
+ * GestureActivity is a specialized ComponentActivity for handling user gestures.
+ * It primarily focuses on demonstrating different gesture detections in an interactive
+ * and responsive manner, using various Jetpack Compose components and gesture detection
+ * functionalities. The activity includes a dynamically changing UI that adapts to screen orientation,
+ * displaying a ball that responds to drag and tap gestures, and a log area to track these gestures.
+ *
+ * Key Components and Features:
+ * - GestureActivityContent: A composable function that sets up the UI, manages the state for
+ *   the ball's position and gesture logs, and adapts the layout based on screen orientation.
+ * - BallMovementArea: A composable that provides a canvas for the ball, handling drag gestures
+ *   (swipe directions) and updating the ball's position accordingly.
+ * - GestureLogArea: A composable that displays a list of detected gestures using LazyColumn,
+ *   showing the interaction history.
+ * - Gesture detection: Utilizes detectDragGestures and detectTapGestures to track user interactions.
+ * - Orientation handling: Adjusts the layout (Row for landscape, Column for portrait) dynamically
+ *   based on the current screen orientation, ensuring a responsive and adaptable UI.
+ *
+ * @see ComponentActivity - Base class for activities that use Jetpack Compose for their UI.
+ * @see @Composable - Annotation for composable functions, used to define UI components.
+ * @see Canvas - Used for drawing the ball and handling gestures within its area.
+ * @see LazyColumn - Efficiently displays a scrollable list, used for showing gesture logs.
+ * @see detectDragGestures, detectTapGestures - Functions for detecting various user gestures.
+ * @see MutableState, mutableStateOf - Used for managing and observing state changes in composables.
+ *
+ * @author Your Name
+ */
 
 class GestureActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

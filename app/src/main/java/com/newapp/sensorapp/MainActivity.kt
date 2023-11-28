@@ -1,4 +1,4 @@
-package com.example.sensorapp
+package com.newapp.sensorapp
 
 
 import SensorViewModel
@@ -30,21 +30,50 @@ import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import java.lang.Math.abs
 
-import androidx.compose.material3.Text
-import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.Surface
 
 import androidx.compose.ui.text.TextStyle
 
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+
+/**
+ * MainActivity is the entry point of the SensorApp, designed to interact with sensors and
+ * location services. It integrates with the FusedLocationProviderClient for location services
+ * and manages permission requests for location access. The main functionality includes fetching
+ * and updating location data, and navigation to other activities like GestureActivity and
+ * SensorBallActivity. This activity uses Jetpack Compose for its UI, showcasing a modern
+ * declarative UI approach.
+ *
+ * Key Components and Functionalities:
+ * - FusedLocationProviderClient: Used for accessing the device's last known location.
+ * - SensorViewModel: A ViewModel for managing sensor data and location updates.
+ * - Permission Handling: Requests and checks location permissions to ensure proper functionality.
+ * - SensorScreen: A composable function that creates the UI with buttons for navigating
+ *   to GestureActivity and SensorBallActivity.
+ * - Dynamic UI Update: LiveData is observed to update the UI with sensor and location data.
+ *
+ * Permission Handling:
+ * The app requests ACCESS_FINE_LOCATION and ACCESS_COARSE_LOCATION permissions to fetch the
+ * device's location. The permission request results are handled in onRequestPermissionsResult.
+ *
+ * Navigation:
+ * The app provides navigation to GestureActivity and SensorBallActivity through buttons
+ * in the SensorScreen composable function.
+ *
+ * @see ComponentActivity - Base class for activities that use Android Jetpack's modern lifecycle.
+ * @see @Composable - Annotation for composable functions, defining the app's UI components.
+ * @see FusedLocationProviderClient - For accessing location services.
+ * @see ViewModelProvider - For instantiating and obtaining the SensorViewModel instance.
+ * @see LiveData - Used to observe data changes and update the UI accordingly.
+ *
+ * @author Your Name
+ */
+
 
 class MainActivity : ComponentActivity() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient

@@ -1,4 +1,4 @@
-package com.example.sensorapp.ui.theme
+package com.newapp.sensorapp.ui.theme
 
 import android.app.Activity
 import android.os.Build

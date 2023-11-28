@@ -1,4 +1,4 @@
-package com.example.sensorapp
+package com.newapp.sensorapp
 
 import android.content.Context
 import android.hardware.Sensor
@@ -16,12 +16,40 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
-import androidx.compose.ui.unit.min
 import kotlin.math.max
 import kotlin.math.min
+
+/**
+ * SensorBallActivity is an interactive activity that uses device sensors, specifically the
+ * accelerometer, to control the movement of a ball on the screen. This activity demonstrates
+ * the integration of sensor data with UI components in a real-time and responsive manner.
+ * It utilizes Jetpack Compose for its UI, showcasing a modern approach to Android UI development.
+ *
+ * Key Components and Functionalities:
+ * - SensorManager and Accelerometer: Access and listen to the accelerometer sensor to get
+ *   real-time motion data of the device.
+ * - SensorEventListener: Implements SensorEventListener to respond to sensor data changes.
+ * - BallArea Composable: A composable function that renders a ball on the canvas, whose position
+ *   is controlled by the accelerometer data.
+ * - updateBallPosition: A function to calculate and update the ball's position based on sensor
+ *   data, ensuring the ball remains within the screen bounds.
+ * - Screen Dimension Handling: Fetches screen dimensions to keep the ball's movement within
+ *   the visible area.
+ * - Lifecycle Handling: Registers and unregisters the sensor listener based on the Activity's lifecycle.
+ *
+ * This activity demonstrates the use of hardware sensors in conjunction with a dynamic and
+ * reactive UI, providing an interactive experience. It's a perfect example of how sensor data
+ * can be creatively used in Android applications.
+ *
+ * @see ComponentActivity - Base class for activities that use Android Jetpack's modern lifecycle.
+ * @see SensorEventListener - Interface for receiving notifications from the SensorManager.
+ * @see SensorManager - System service to access and manage sensors.
+ * @see Canvas - Jetpack Compose UI element used for drawing the ball.
+ * @see @Composable - Annotation for composable functions, defining UI elements in Jetpack Compose.
+ *
+ * @author Your Name
+ */
 
 class SensorBallActivity : ComponentActivity(), SensorEventListener {
     private lateinit var sensorManager: SensorManager
